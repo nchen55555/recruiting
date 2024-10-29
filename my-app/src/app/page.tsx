@@ -56,8 +56,6 @@
 
 "use client"
 import { useRouter } from "next/navigation" // redirects the user to main page after submission 
-
-import { useState, FormEvent} from "react" // state for different inputs (title, priority, etc)]
  
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -65,6 +63,17 @@ import { z } from "zod"
  
 import { Button } from "@/components/ui/button"
 import * as React from 'react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 
 import {
@@ -99,45 +108,30 @@ export default function ProfileForm() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => { // this is an event handler 
     console.log(values);
-    const data ={"first_name": values.first_name,"last_name": values.last_name, "phone_numbers": [{"value": values.phone, "type": "work"}], "applications": [{"job_id": 4285367007}]}
-    // const data = {
-    //     first_name: values.first_name,
-    //     last_name: values.last_name,
-    //     phone_numbers: [
-    //         {
-    //         "value": values.phone,
-    //         }
-    //     ],
-    //     email_addresses: [
-    //         {
-    //         "value": values.email
-    //         }
-    //     ],
-    //     applications: [
-    //         {
-    //         "job_id": 4285367007
-    //         }
-    //     ]
-    // };
+    const data ={"first_name": values.first_name,"last_name": values.last_name, "email_addresses":[{"value": values.email, "type": "work"}], "phone_numbers": [{"value": values.phone, "type": "work"}], "applications": [{"job_id": 4285367007}]}
+    console.log(btoa(`f06b2b153e016f8e7c3632627af56b1d-7:`))
     console.log(JSON.stringify(data));
     const response = await fetch("api/submit", {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    console.log(response);
-    if (response.status != 201) {
-      router.push('/error'); // Redirect to the error route
-    }
-    else{
-      // retrieve the application
+    console.log(response.formData, response.status);
+    if (response.ok) { // Check if the response is successful
+      const responseData = await response.json(); // Parse the JSON response
+      console.log(responseData); // Access the data returned from the server
+    } else {
+        // Handle error responses
+        const errorData = await response.json(); // Optional: parse error response for more info
+        console.log('Error:', errorData);
+        router.push('/error'); // Redirect to the error route
     }
   };
 
   return (
     <div className="p-4">
       <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form className="space-y-8">
         <FormField
           control={form.control}
           name="first_name"
@@ -206,7 +200,22 @@ export default function ProfileForm() {
           )
         }
         />
-        <Button type="submit">Submit</Button>
+        {/* <Button type="submit">Submit</Button> */}
+        <AlertDialog>
+        <AlertDialogTrigger className="text-white bg-black hover:bg-gray-800 focus:ring-4 focus:ring-gray-500 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none dark:bg-black dark:hover:bg-gray-700 dark:focus:ring-gray-800">Submit</AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Submit Your Application?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Your application will only be considered once. Please double check all your information is correctly filled out! 
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={form.handleSubmit(onSubmit)}>Continue</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </form>
     </Form>
     </div>
