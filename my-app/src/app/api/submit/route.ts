@@ -10,7 +10,7 @@ const apiKey = 'f06b2b153e016f8e7c3632627af56b1d-7';
 
   // curl -X GET 'https://harvest.greenhouse.io/v1/candidates/34727662007' -u  f06b2b153e016f8e7c3632627af56b1d-7:
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
     const data = await req.json(); // Parse request body
     console.log(btoa(`${apiKey}`))
     const response = await fetch('https://harvest.greenhouse.io/v1/candidates', {
