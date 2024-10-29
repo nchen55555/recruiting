@@ -61,6 +61,7 @@ export default function ProfileForm() {
     });
     if (response.ok) { // Check if the response is successful
       const responseData = await response.json(); // Parse the JSON response
+      console.log("Resend API Key:", process.env.RESEND_API_KEY);
       console.log(responseData); // Access the data returned from the server
       console.log(responseData.data.email_addresses[0].value); // Access the data returned from the server
       const email_response = await fetch("api/send", {
