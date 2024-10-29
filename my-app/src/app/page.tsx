@@ -1,67 +1,9 @@
-// "use client" // tells next js that this is a client component 
-
-// import {Input} from "@nextui-org/react";
-
-// import { useRouter } from "next/navigation" // redirects the user to main page after submission 
-
-// import { useState, FormEvent} from "react" // state for different inputs (title, priority, etc)]
-
-
-// export default function Home() {
-//   const router = useRouter() 
-
-//   const [application, setApplication] = useState({ first_name: "", last_name: "", email: "", phone: ""});
-//   const [isLoading, setLoading] = useState(false)
-
-//   const data = {
-//     first_name: "John",
-//     last_name: "Locke",
-//     company: "The Tustin Box Company",
-//     title: "Customer Success Representative",
-//     is_private: false,
-//     applications: [
-//         {
-//             job_id: 4285367007
-//         }
-//     ]
-//   };
-
-
-//   const handleSubmit = async (e: FormEvent) => {
-//     e.preventDefault(); // prevent default action of a form which is to refresh a page 
-//     setLoading(true);
-//     const response = await fetch("api/submit", {
-//       method: "POST",
-//       headers: { 'Content-Type': 'application/json' },
-//       body: JSON.stringify(data),
-//     });
-//     console.log(response);
-//   }
-//   return (
-//     <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-//       <Input type="email" label="Email" />
-//       <Input type="email" label="Email" placeholder="Enter your email" />
-//     </div>
-//     // <form onSubmit={handleSubmit}>
-//     //   <label >First name:</label>
-//     //   <input type="text" id="first" name="first" required onChange={(e) => setName(e.target.value)} value={name} />
-//     //   <label >Last name:</label>
-//     //   <input type="text" id="last" name="last" />
-//     //   <button disabled={isLoading}>
-//     //     {isLoading ? <span>Submitting Application...</span> : <span>Submit Application</span>}
-//     //   </button>
-//     // </form>
-//   );
-// }
-
 "use client"
 import { useRouter } from "next/navigation" // redirects the user to main page after submission 
  
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
- 
-import { Button } from "@/components/ui/button"
 import * as React from 'react';
 import {
   AlertDialog,
@@ -90,12 +32,13 @@ import { Input } from "@/components/ui/input"
 const formSchema = z.object({
   first_name: z.string(), 
   last_name: z.string(),
-  email: z.string(),
+  email: z.string().email("Invalid email address").nonempty("Email is required"),
   phone: z.string(),
 })
  
 export default function ProfileForm() {
   const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -116,10 +59,16 @@ export default function ProfileForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    console.log(response.formData, response.status);
     if (response.ok) { // Check if the response is successful
       const responseData = await response.json(); // Parse the JSON response
       console.log(responseData); // Access the data returned from the server
+      console.log(responseData.data.email_addresses[0].value); // Access the data returned from the server
+      const email_response = await fetch("api/send", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: responseData,
+      });
+      console.log(email_response.json);
     } else {
         // Handle error responses
         const errorData = await response.json(); // Optional: parse error response for more info
@@ -193,7 +142,7 @@ export default function ProfileForm() {
                 <Input placeholder="Phone Number" {...field} className="max-w-96" />
               </FormControl>
               <FormDescription>
-                Please Input A Valid Phone Number
+                Please Input A Valid Personal Phone Number
               </FormDescription>
               <FormMessage />
             </FormItem>

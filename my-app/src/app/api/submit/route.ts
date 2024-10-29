@@ -8,7 +8,7 @@ const apiKey = 'f06b2b153e016f8e7c3632627af56b1d-7';
   // -H "On-Behalf-Of: 4280249007" \
   // -d '{"first_name": "John","last_name": "Locke","company": "The Tustin Box Company","title": "Customer Success Representative","is_private": false,"applications": [{"job_id": 4285367007}]}'
 
-  // curl -X GET 'https://harvest.greenhouse.io/v1/candidates/34726731007' -u  f06b2b153e016f8e7c3632627af56b1d-7:
+  // curl -X GET 'https://harvest.greenhouse.io/v1/candidates/34727662007' -u  f06b2b153e016f8e7c3632627af56b1d-7:
 
 export async function POST(req: NextRequest, res: NextResponse) {
     const data = await req.json(); // Parse request body
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         Authorization: 'Basic ZjA2YjJiMTUzZTAxNmY4ZTdjMzYzMjYyN2FmNTZiMWQtNzo=',
         'Content-Type': 'application/json',
         'On-Behalf-Of': '4280249007',
-      },
+     },
       body: JSON.stringify(data), // not getting the right data fro the request 
     });
 
