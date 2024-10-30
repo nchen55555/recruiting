@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const response = await fetch(data.url, {
       method: 'POST',
       headers: {
-        Authorization: `Basic ${btoa(`${apiKey}`)}`,
+        Authorization: `Basic ${btoa(`${apiKey}:`)}`,
         'Content-Type': 'application/json',
         'On-Behalf-Of': '4280249007',
      },

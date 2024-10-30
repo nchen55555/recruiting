@@ -63,6 +63,7 @@ export default function ProfileForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
+    console.log("Step 1");
     if (initial_app_response.ok) { // Check if the response is successful
       const responseData = await initial_app_response.json(); // Parse the JSON response
       const resume_app_response = await fetch("api/resume", {
@@ -70,6 +71,7 @@ export default function ProfileForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({url:`https://harvest.greenhouse.io/v1/candidates/${responseData.data.id}/attachments`, application: application_files}),
       });
+      console.log("Step 2");
       if(resume_app_response.ok){
         console.log(responseData); // Access the data returned from the server
         console.log(responseData.data.email_addresses[0].value); // Access the data returned from the server
@@ -78,9 +80,11 @@ export default function ProfileForm() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(responseData)
         });
+        console.log("Step 3");
         if(email_response.ok){
           console.log("success");
           errored = false;
+          console.log("Step 4");
         }
       }
     }

@@ -12,11 +12,11 @@ const apiKey = 'f06b2b153e016f8e7c3632627af56b1d-7';
 
 export async function POST(req: NextRequest) {
     const data = await req.json(); // Parse request body
-    console.log(btoa(`${apiKey}`))
+    console.log(btoa(`${apiKey}:`))
     const response = await fetch('https://harvest.greenhouse.io/v1/candidates', {
       method: 'POST',
       headers: {
-        Authorization: `Basic ${btoa(`${apiKey}`)}`,
+        Authorization: `Basic ${btoa(`${apiKey}:`)}`,
         'Content-Type': 'application/json',
         'On-Behalf-Of': '4280249007',
      },
