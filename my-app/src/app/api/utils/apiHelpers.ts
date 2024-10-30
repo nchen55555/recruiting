@@ -1,6 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
-
-export const submitApplication = async (data: any) =>
+export const submitApplication = async (data: Record<string, unknown>) =>
 fetch("/api/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -10,7 +8,7 @@ fetch("/api/submit", {
     }),
 });
   
-export const uploadResume = async (candidateId: string, applicationFiles: any) =>
+export const uploadResume = async (candidateId: string, applicationFiles: Record<string, unknown>) =>
 fetch(`/api/submit`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -20,7 +18,7 @@ fetch(`/api/submit`, {
     }),
 });
 
-export const sendConfirmationEmail = async (data: any) =>
+export const sendConfirmationEmail = async (data: Record<string, unknown>) =>
 fetch("/api/send", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

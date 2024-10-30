@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const Application = ({ form, onSubmit, fileRef }: any) => (
     <div className="p-4">
       <Form {...form}>
