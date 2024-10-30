@@ -1,6 +1,6 @@
 "use client"
 import { useRouter } from "next/navigation" // redirects the user to main page after submission 
- 
+import { Label } from "@/components/ui/label"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -30,12 +30,14 @@ import {
 import { Input } from "@/components/ui/input"
  
 const formSchema = z.object({
-  first_name: z.string(), 
-  last_name: z.string(),
+  first_name: z.string().nonempty("First name is required"), 
+  last_name: z.string().nonempty("Last name is required"),
   email: z.string().email("Invalid email address").nonempty("Email is required"),
-  phone: z.string(),
+  phone: z.string().nonempty("Phone number is required"),
+  resume: typeof window === 'undefined' ? z.any() : z.instanceof(FileList)
 })
  
+
 export default function ProfileForm() {
   const router = useRouter();
 
@@ -46,40 +48,69 @@ export default function ProfileForm() {
       last_name: "",
       email: "",
       phone: "",
+      resume: z.instanceof(FileList)
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => { // this is an event handler 
-    console.log(values);
-    const data ={"first_name": values.first_name,"last_name": values.last_name, "email_addresses":[{"value": values.email, "type": "work"}], "phone_numbers": [{"value": values.phone, "type": "work"}], "applications": [{"job_id": 4285367007}]}
-    console.log(btoa(`f06b2b153e016f8e7c3632627af56b1d-7:`))
+    const base64 = await toBase64(values?.resume[0] as Blob);
+    const data ={"first_name": values.first_name,"last_name": values.last_name, "email_addresses":[{"value": values.email, "type": "work"}], "phone_numbers": [{"value": values.phone, "type": "work"}], "applications": [{"job_id": 4285367007, "attachments": []}]}
+    const application_files = {"filename" : values.resume[0].name, "type" : "resume", "content" : base64, "content_type" : "application/pdf"}
+    var errored = true;
     console.log(JSON.stringify(data));
-    const response = await fetch("api/submit", {
+    const initial_app_response = await fetch("api/submit", {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (response.ok) { // Check if the response is successful
-      const responseData = await response.json(); // Parse the JSON response
-      console.log("Resend API Key:", process.env.RESEND_API_KEY);
-      console.log(responseData); // Access the data returned from the server
-      console.log(responseData.data.email_addresses[0].value); // Access the data returned from the server
-      const email_response = await fetch("api/send", {
+    if (initial_app_response.ok) { // Check if the response is successful
+      const responseData = await initial_app_response.json(); // Parse the JSON response
+      const resume_app_response = await fetch("api/resume", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(responseData)
+        body: JSON.stringify({url:`https://harvest.greenhouse.io/v1/candidates/${responseData.data.id}/attachments`, application: application_files}),
       });
-      const username = process.env.NEXT_PUBLIC_BURNER_USERNAME;
-      const password = process.env.NEXT_PUBLIC_BURNER_PASSWORD;
-      const myEmail = process.env.NEXT_PUBLIC_PERSONAL_EMAIL;
-      console.log(username, password, myEmail, email_response);
-    } else {
-        // Handle error responses
-        const errorData = await response.json(); // Optional: parse error response for more info
-        console.log('Error:', errorData);
-        router.push('/error'); // Redirect to the error route
+      if(resume_app_response.ok){
+        console.log(responseData); // Access the data returned from the server
+        console.log(responseData.data.email_addresses[0].value); // Access the data returned from the server
+        const email_response = await fetch("api/send", {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(responseData)
+        });
+        if(email_response.ok){
+          console.log("success");
+          errored = false;
+        }
+      }
+    }
+    if(!errored){
+      router.push('/success');
+    }
+    else{
+      router.push('/error');
     }
   };
+
+  const toBase64 = (file: Blob) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      
+      if (file) {
+        fileReader.readAsDataURL(file);
+      }
+  
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+  
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  const fileRef = form.register("resume");
 
   return (
     <div className="p-4">
@@ -147,6 +178,25 @@ export default function ProfileForm() {
               </FormControl>
               <FormDescription>
                 Please Input A Valid Personal Phone Number
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )
+        }
+        />
+        <FormField
+          control={form.control}
+          name="resume"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Resume File Upload</FormLabel>
+              <FormControl>
+              <div className="grid w-full max-w-sm items-center gap-1.5">
+                <Input type="file" {...fileRef} onChange={(event) => {field.onChange(event.target?.files?.[0] ?? undefined);}}/>
+              </div>
+              </FormControl>
+              <FormDescription>
+                Please Upload Your Most Updated Resume
               </FormDescription>
               <FormMessage />
             </FormItem>
