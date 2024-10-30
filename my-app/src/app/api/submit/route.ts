@@ -1,29 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const apiKey = 'f06b2b153e016f8e7c3632627af56b1d-7';
-
-// curl -X POST 'https://harvest.greenhouse.io/v1/candidates' \
-  // -H "Authorization: Basic ZjA2YjJiMTUzZTAxNmY4ZTdjMzYzMjYyN2FmNTZiMWQtNzo=" \
-  // -H "Content-Type: application/json" \
-  // -H "On-Behalf-Of: 4280249007" \
-  // -d '{"first_name": "John","last_name": "Locke","company": "The Tustin Box Company","title": "Customer Success Representative","is_private": false,"applications": [{"job_id": 4285367007}]}'
-
-  // curl -X GET 'https://harvest.greenhouse.io/v1/candidates/34727662007' -u  f06b2b153e016f8e7c3632627af56b1d-7:
-
 export async function POST(req: NextRequest) {
-    const data = await req.json(); // Parse request body
-    console.log(btoa(`${apiKey}:`))
-    const response = await fetch('https://harvest.greenhouse.io/v1/candidates', {
+    const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+    const userId = process.env.NEXT_PUBLIC_USER_ID;
+    const data = await req.json(); 
+    const response = await fetch(data.url, {
       method: 'POST',
       headers: {
         Authorization: `Basic ${btoa(`${apiKey}:`)}`,
         'Content-Type': 'application/json',
-        'On-Behalf-Of': '4280249007',
+        'On-Behalf-Of': `${userId}`,
      },
-      body: JSON.stringify(data), // not getting the right data fro the request 
+      body: JSON.stringify(data.data), 
     });
 
     console.log("Greenhouse response status:", response.status);
+
     if (!response.ok) {
         const errorData = await response.json();
         console.log("Error from Greenhouse:", errorData);
