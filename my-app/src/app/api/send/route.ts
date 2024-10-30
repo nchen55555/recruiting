@@ -1,27 +1,48 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { EmailTemplate } from '@/components/email-template';
-import { Resend } from 'resend';
+import { NextResponse, NextRequest } from 'next/server'
+const nodemailer = require('nodemailer');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Handles POST requests to /api
 
 export async function POST(req: NextRequest) {
-  try {
+    const username = "nchen55555@gmail.com" // process.env.NEXT_PUBLIC_BURNER_USERNAME;
+    const password = "bpwrwdhzhzyslnzv"// process.env.NEXT_PUBLIC_BURNER_PASSWORD;
     const body = await req.json();
+    const email = body.data.email_addresses[0].value;
+    const name = body.data.first_name;
+    console.log("Inside Email Sender", body, username, password)
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      tls: {
+          ciphers: "SSLv3",
+          rejectUnauthorized: false,
+      },
 
-    const { data, error } = await resend.emails.send({
-      from: 'Nicole <nicole_chen@college.harvard.edu>',
-      to: [body.data.email_addresses[0].value],
-      subject: 'Hello world',
-      react: EmailTemplate({ firstName: body.data.first_name }),
+      auth: {
+          user: username,
+          pass: password
+      }
     });
 
-    if (error) {
-      return NextResponse.json(error, { status: 400 });
-    }
+    try {
+      const mail = await transporter.sendMail({
+          from: username,
+          to: email,
+          subject: `Thank you for your application!`,
+          html: `
+          Hey ${name}! 
+          
+          Thank you for applying to Paraform. We appreciate your interest and wanted to confirm that we have received your application with the following information: 
 
-    return NextResponse.json(data, { status: 200 });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+          `,
+      })
+      console.log("Mail response:", mail);
+
+
+      return NextResponse.json({ message: "Success: email was sent" })
+
+    } catch (error) {
+        console.log(error)
+        return NextResponse.json({ message: "COULD NOT SEND MESSAGE", status: 500})
+    }
   }
-}

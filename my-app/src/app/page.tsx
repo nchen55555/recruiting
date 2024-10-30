@@ -67,9 +67,12 @@ export default function ProfileForm() {
       const email_response = await fetch("api/send", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: responseData,
+        body: JSON.stringify(responseData)
       });
-      console.log(email_response.json);
+      const username = process.env.NEXT_PUBLIC_BURNER_USERNAME;
+      const password = process.env.NEXT_PUBLIC_BURNER_PASSWORD;
+      const myEmail = process.env.NEXT_PUBLIC_PERSONAL_EMAIL;
+      console.log(username, password, myEmail, email_response);
     } else {
         // Handle error responses
         const errorData = await response.json(); // Optional: parse error response for more info
