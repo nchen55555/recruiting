@@ -1,6 +1,5 @@
 "use client"
 import { useRouter } from "next/navigation" // redirects the user to main page after submission 
-import { Label } from "@/components/ui/label"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -38,6 +37,7 @@ const formSchema = z.object({
 })
  
 
+
 export default function ProfileForm() {
   const router = useRouter();
 
@@ -48,7 +48,7 @@ export default function ProfileForm() {
       last_name: "",
       email: "",
       phone: "",
-      resume: z.instanceof(FileList)
+      resume: null,
     },
   });
 
@@ -56,7 +56,7 @@ export default function ProfileForm() {
     const base64 = await toBase64(values?.resume[0] as Blob);
     const data ={"first_name": values.first_name,"last_name": values.last_name, "email_addresses":[{"value": values.email, "type": "work"}], "phone_numbers": [{"value": values.phone, "type": "work"}], "applications": [{"job_id": 4285367007, "attachments": []}]}
     const application_files = {"filename" : values.resume[0].name, "type" : "resume", "content" : base64, "content_type" : "application/pdf"}
-    var errored = true;
+    let errored = true;
     console.log(JSON.stringify(data));
     const initial_app_response = await fetch("api/submit", {
       method: "POST",

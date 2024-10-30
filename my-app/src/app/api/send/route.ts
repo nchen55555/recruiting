@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server'
+/* eslint-disable-next-line @typescript-eslint/no-require-imports */
 const nodemailer = require('nodemailer');
 
 // Handles POST requests to /api

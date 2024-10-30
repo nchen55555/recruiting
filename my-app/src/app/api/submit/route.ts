@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     const response = await fetch('https://harvest.greenhouse.io/v1/candidates', {
       method: 'POST',
       headers: {
-        Authorization: 'Basic ZjA2YjJiMTUzZTAxNmY4ZTdjMzYzMjYyN2FmNTZiMWQtNzo=',
+        Authorization: `Basic ${btoa(`${apiKey}`)}`,
         'Content-Type': 'application/json',
         'On-Behalf-Of': '4280249007',
      },
