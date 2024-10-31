@@ -26,7 +26,7 @@ const formSchema = z.object({
   last_name: z.string().nonempty("Last name is required"),
   email: z.string().email("Invalid email address").nonempty("Email is required"),
   phone: z.string().nonempty("Phone number is required"),
-  resume: typeof window === 'undefined' ? z.any() : z.instanceof(FileList)
+  resume: typeof window === 'undefined' ? z.any() : z.instanceof(FileList, { message: "The resume must be a valid file" })
 })
  
 /**
