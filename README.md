@@ -4,9 +4,9 @@ This project is a mini integration application that connects with Greenhouse.
 
 ## Instructions and Background
 
-For detailed instructions and background information about the project, please refer to the following Notion page:
+For detailed instructions and the product spec about the project, please refer to the following Notion page:
 
-[Greenhouse Integration Mini Project](https://www.notion.so/Greenhouse-Integration-Mini-project-13047b28d70c80b097b5d5af5d7e6da4?pvs=4)
+[Greenhouse Integration Mini Project]([https://www.notion.so/Greenhouse-Integration-Mini-project-13047b28d70c80b097b5d5af5d7e6da4?pvs=4](https://thankful-bell-2e3.notion.site/Paraform-Mini-Project-13047b28d70c80f6bc9fecf9ddb2a4cc?pvs=4))
 
 ## Deployed Application
 
