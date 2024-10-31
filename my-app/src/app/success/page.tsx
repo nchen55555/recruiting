@@ -5,7 +5,11 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert"
- 
+
+/**
+ * Success Page 
+ * Renders a success notification when the application goes through
+ */
 export default function SuccessPage() {
   return (
     <div className="p-4">

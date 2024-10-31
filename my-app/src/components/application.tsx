@@ -20,6 +20,10 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+/**
+ * Application Form
+ * Renders the application form 
+ */
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const Application = ({ form, onSubmit, fileRef }: any) => (

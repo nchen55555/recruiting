@@ -7,7 +7,11 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert"
- 
+
+/**
+ * Error Page Alert 
+ * Renders an alert error when the application is not successful 
+ */
 export default function ErrorAlert() {
   const router = useRouter();
   return (
