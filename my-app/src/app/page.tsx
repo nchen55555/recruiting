@@ -1,9 +1,13 @@
 "use client"
 
 import Application from '@/components/application'; 
+// import dynamic from 'next/dynamic';
+// const Application = dynamic(() => import('@/components/application'));
+
 import { useRouter } from "next/navigation" 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { useState } from 'react';
 import { z } from "zod"
 import * as React from 'react';
 
@@ -45,6 +49,7 @@ export default function ApplicationForm() {
   // Logic for submission
   const onSubmit = async (values: z.infer<typeof formSchema>) => {  
     try{
+      setLoading(true);     
       // Converts resume to base64 encoding 
       const base64 = await toBase64(values?.resume[0] as Blob);
       // Reformats form data to conform with GreenHouse API input requirements 
@@ -79,9 +84,11 @@ export default function ApplicationForm() {
     }
     catch (error) {
       console.error(error);
+      setLoading(false);  
       router.push("/error");
     }
   }
+  const [loading, setLoading] = useState(false); // Loading state
   const fileRef = form.register("resume");
-  return <Application form={form} onSubmit={onSubmit} fileRef={fileRef} />;
+  return <Application loading= {loading} form={form} onSubmit={onSubmit} fileRef={fileRef} />;
 }

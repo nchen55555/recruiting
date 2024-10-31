@@ -1,3 +1,7 @@
+/**
+ * Email Template
+ * HTML for the email template that is sent to candidates
+ */
 type EmailTemplateProps = {
   first_name: string;
   last_name: string;
@@ -6,10 +10,6 @@ type EmailTemplateProps = {
   candidate_id: string;
 };
 
-/**
- * Email Template
- * HTML for the email template that is sent to candidates
- */
 export function emailTemplate({
   first_name,
   last_name,
