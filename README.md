@@ -16,7 +16,7 @@ You can access the deployed application using the following link:
 
 ## Documentation 
 
-This project was programmed through TypeScript and Next JS. To test and run locally, please refer to the README file under `my-app`. All code is organized under 
+This project was programmed through Typescript and Next.js. To test and run locally, please refer to the README file under `my-app`. All code is organized under 
 the `my-app/src` directory where `app` houses direct client and server side logic and `components` represents the internal and external UIs that have been downloaded 
 and integrated into the application. Within `app` you will find that the main logic/form page can be accessed within the `page.tsx` [file](https://github.com/nchen55555/recruiting/blob/main/my-app/src/app/page.tsx)
 with pages for success and error after submission in the `success` and `error` directories. `api` houses the server-side 
